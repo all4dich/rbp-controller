@@ -1,6 +1,6 @@
 import time
 
-from ina219 import INA219
+from ina219 import INA219, DeviceRangeError
 from prometheus_client import start_http_server, Gauge
 import random
 import argparse
@@ -32,21 +32,27 @@ supply_voltage_gauge.labels('hostname', hostname)
 def collect_metrics():
     while True:
         # Read voltage and current from INA219
-        voltage = ina.voltage()
-        supply_voltage = ina.supply_voltage()
-        shunt_voltage = ina.shunt_voltage()
-        current = ina.current()
-        power = ina.power()
+        try:
+            voltage = ina.voltage()
+            supply_voltage = ina.supply_voltage()
+            shunt_voltage = ina.shunt_voltage()
+            current = ina.current()
+            power = ina.power()
 
-        # Update Prometheus metrics
-        voltage_gauge.labels(hostname, device).set(voltage)
-        supply_voltage_gauge.labels(hostname, device).set(supply_voltage)
-        shunt_voltage_gauge.labels(hostname, device).set(shunt_voltage)
-        current_gauge.labels(hostname, device).set(current)
-        power_gauge.labels(hostname, device).set(power)
+            # Update Prometheus metrics
+            voltage_gauge.labels(hostname, device).set(voltage)
+            supply_voltage_gauge.labels(hostname, device).set(supply_voltage)
+            shunt_voltage_gauge.labels(hostname, device).set(shunt_voltage)
+            current_gauge.labels(hostname, device).set(current)
+            power_gauge.labels(hostname, device).set(power)
 
-        # Sleep for a bit before collecting metrics again
-        time.sleep(1)
+            # Sleep for a bit before collecting metrics again
+            time.sleep(1)
+        except DeviceRangeError as e:
+            # Current out of device range with specified shunt resistor
+            print(e)
+            time.sleep(1)
+
 
 if __name__ == '__main__':
     # Start Prometheus HTTP server on port 8000(default, can be changed using --port argument)
