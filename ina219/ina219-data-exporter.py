@@ -52,6 +52,11 @@ def collect_metrics():
             # Current out of device range with specified shunt resistor
             print(e)
             time.sleep(1)
+        except OSError as e:
+            # Current out of device range with specified shunt resistor
+            print(e)
+            time.sleep(1)
+
 
 
 if __name__ == '__main__':
