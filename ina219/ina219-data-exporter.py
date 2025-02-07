@@ -27,8 +27,6 @@ shunt_voltage_gauge = Gauge('ina219_shunt_voltage', 'Shunt Voltage measured by I
 current_gauge = Gauge('ina219_current', 'Current measured by INA219', ['hostname', 'device'])
 power_gauge = Gauge('ina219_power', 'Power measured by INA219', ['hostname', 'device'])
 
-voltage_gauge.labels('hostname', hostname)
-supply_voltage_gauge.labels('hostname', hostname)
 def collect_metrics():
     while True:
         # Read voltage and current from INA219
