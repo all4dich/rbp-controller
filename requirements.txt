@@ -1,3 +1,6 @@
 pi-ina219
 prometheus-client
 adafruit-circuitpython-ina260
+adafruit-circuitpython-tca9548a
+RPi.GPIO
+lgpio
