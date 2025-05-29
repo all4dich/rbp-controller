@@ -23,7 +23,7 @@ i2c = board.I2C()
 
 # TCA9548A multiplexer address
 TCA9548A_ADDRESS = args.address
-print(f"Using TCA9548A address: 0x{TCA9548A_ADDRESS:x}")
+logging.info(f"Using TCA9548A multiplexer with I2C address: 0x{TCA9548A_ADDRESS:x}")
 # Initialize TCA9548A multiplexer
 try:
     tca = adafruit_tca9548a.TCA9548A(i2c, address=TCA9548A_ADDRESS)
@@ -31,7 +31,6 @@ try:
 except ValueError:
     logging.error(f"Could not find a TCA9548A at address 0x{TCA9548A_ADDRESS:x}. Please check wiring or address configuration.")
     exit(1)
-print(tca)
 # Assuming INA260 is connected to channel 7 of the TCA9548A.
 # You can change this to tca[1], tca[2], etc., if connected to a different channel.
 INA260_CHANNEL = args.channel
@@ -69,7 +68,7 @@ def collect_metrics():
             power_gauge.labels(hostname, device).set(power)
 
             # Sleep for a bit before collecting metrics again
-            print(f"Voltage: {voltage:.2f}V, Current: {current:.2f}mA, Power: {power:.2f}mW")
+            logging.info(f"Voltage: {voltage:.2f}V, Current: {current:.2f}mA, Power: {power:.2f}mW")
             time.sleep(1)
         except OSError as e:
             # Handle I/O errors, e.g., device not found or communication issue
